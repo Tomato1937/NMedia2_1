@@ -2,7 +2,9 @@ package ru.netology.nmedia
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
 import ru.netology.nmedia.databinding.ActivityMainBinding
+import ru.netology.nmedia.viewmodel.PostViewModel
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -10,32 +12,27 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val post = Post(
-            id = 1,
-            author = "Нетология. Университет интернет-профессий будущего",
-            content = "Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов. Но самое важное остаётся с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. Наша миссия — помочь встать на путь роста и начать цепочку перемен → http://netolo.gy/fyb",
-            published = "21 мая в 18:36",
-            likedByMe = false
-        )
-        with(binding) {
-            tvAuthor.text = post.author
-            tvContent.text = post.content
-            tvPublished.text = post.published
-            tvLike?.text = post.likes.toString()
-            tvShare?.text = post.shares.toString()
-            ibLike?.setOnClickListener {
-                post.likedByMe = !post.likedByMe
+        val viewModel: PostViewModel by viewModels()
+        viewModel.data.observe(this) { post ->
+            with(binding) {
+                tvAuthor.text = post.author
+                tvContent.text = post.content
+                tvPublished.text = post.published
+                tvLike.text = post.likes.toString()
+                tvShare.text = post.shares.toString()
                 ibLike.setImageResource(
                     if (post.likedByMe) R.drawable.ic_baseline_favorited_border_24
                     else R.drawable.ic_baseline_favorite_border_24
                 )
-                if (post.likedByMe) post.likes++
-                else post.likes--
                 tvLike.text = totalCount(post.likes)
-            }
-            ibShare?.setOnClickListener {
-                post.shares++
                 tvShare.text = totalCount(post.shares)
+                }
+            }
+
+            binding.ibLike.setOnClickListener {
+                viewModel.like()
+            binding.ibShare.setOnClickListener {
+                viewModel.share()
             }
         }
     }
