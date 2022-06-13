@@ -18,22 +18,20 @@ class MainActivity : AppCompatActivity() {
                 tvAuthor.text = post.author
                 tvContent.text = post.content
                 tvPublished.text = post.published
-                tvLike.text = post.likes.toString()
-                tvShare.text = post.shares.toString()
                 ibLike.setImageResource(
                     if (post.likedByMe) R.drawable.ic_baseline_favorited_border_24
                     else R.drawable.ic_baseline_favorite_border_24
                 )
                 tvLike.text = totalCount(post.likes)
                 tvShare.text = totalCount(post.shares)
-                }
             }
+        }
 
-            binding.ibLike.setOnClickListener {
-                viewModel.like()
-            binding.ibShare.setOnClickListener {
-                viewModel.share()
-            }
+        binding.ibLike.setOnClickListener {
+            viewModel.like()
+        }
+        binding.ibShare.setOnClickListener {
+            viewModel.share()
         }
     }
 }
